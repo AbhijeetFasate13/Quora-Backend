@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -16,16 +17,35 @@ import java.util.function.Function;
 @Service
 public class JWTService {
 
-	private String secretkey = "JoshAbhijeetHemaProjectWorkingAtArea51OnDeveloperCommunityProject";
+	@Value("${jwt.secret}")
+	private String secretkey;
+
+	@Value("${jwt.access-token-expiration:900000}") // 15 minutes default
+	private long accessTokenExpiration;
+
+	@Value("${jwt.refresh-token-expiration:604800000}") // 7 days default
+	private long refreshTokenExpiration;
 
 	public JWTService() {} //NOSONAR
 
 	public String generateToken(String username) {
 		Map<String, Object> claims = new HashMap<>();
-		return Jwts.builder().claims().add(claims).subject(username).issuedAt(new Date(System.currentTimeMillis()))
-				.expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 12)).and().signWith(getKey())
+		return Jwts.builder()
+				.claims().add(claims)
+				.subject(username)
+				.issuedAt(new Date(System.currentTimeMillis()))
+				.expiration(new Date(System.currentTimeMillis() + accessTokenExpiration))
+				.and()
+				.signWith(getKey())
 				.compact();
+	}
 
+	public long getAccessTokenExpiration() {
+		return accessTokenExpiration;
+	}
+
+	public long getRefreshTokenExpiration() {
+		return refreshTokenExpiration;
 	}
 
 	private SecretKey getKey() {

@@ -31,7 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
-
-app.log
-app.log.*
-env.*
+env.properties
+.env
+*.log
