@@ -41,6 +41,7 @@ public class SecurityConfig {
 	            .requestMatchers(
 	                "/api/auth/login",
 	                "/api/auth/register",
+	                "/api/auth/refresh",
 	                "/api/posts/all",
 	                "/api/posts/topic/**",
 	                "/api/dev/reputation/max",
